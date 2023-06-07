@@ -1,0 +1,124 @@
+﻿<div class="table-row">
+    <div class="table-data">
+        <span>
+            @Team.Id
+        </span>
+    </div>
+    <div class="table-data">
+        <span>
+            @Team.Locale
+        </span>
+    </div>
+    <div class="table-data">
+        <span>
+            @Team.Name
+        </span>
+    </div>
+    <div class="table-data">
+        <span>
+            @Team.Abrev
+        </span>
+    </div>
+    <div class="table-data">
+        <span>
+            @Team.Division
+        </span>
+    </div>
+    @if (EnableEdit)
+    {
+        <div class="table-data">
+            <InputCheckbox @bind-Value=ShowEditForm @onclick=ToggleShowEditForm></InputCheckbox>
+        </div>
+    }
+</div>
+@if (ShowEditForm)
+{
+    <div class="table-data">
+        <span>
+            @Team.Id
+        </span>
+    </div>
+    <div class="table-row">
+        <EditForm Model=_editModel>
+            <div class="table-data">
+                @if (_showLocaleInput)
+                {
+                    <InputText @bind-Value=_editModel.Locale></InputText>
+                    <button type="button" class="btn-cancel" @onclick=ToggleLocaleInput>X</button>
+                }
+                else
+                {
+                    <button type="button" class="btn-edit-form-enable" @onclick=ToggleLocaleInput>
+                        Edit Locale
+                    </button>
+                }
+            </div>
+            <div class="table-data">
+                @if (_showNameInput)
+                {
+                    <InputText @bind-Value=_editModel.Name></InputText>
+                    <button type="button" class="btn-cancel" @onclick=ToggleNameInput>X</button>
+                }
+                else
+                {
+                    <button type="button" class="btn-edit-form-enable" @onclick=ToggleNameInput>
+                        Edit Name
+                    </button>
+                }
+            </div>
+            <div class="table-data">
+                @if (_showAbrevInput)
+                {
+                    <InputText @bind-Value=_editModel.Abrev></InputText>
+                    <button type="button" class="btn-cancel" @onclick=ToggleAbrevInput>X</button>
+                }
+                else
+                {
+                    <button type="button" class="btn-edit-form-enable" @onclick=ToggleAbrevInput>
+                        Edit Abreviation
+                    </button>
+                }
+            </div>
+            <div class="table-data">
+                @if (_showConferenceInput)
+                {
+                    <InputSelect @bind-Value=_editModel.Conference>
+                        <option value=@Shared.Enums.Conference.AFC>AFC</option>
+                        <option value=@Shared.Enums.Conference.NFC>NFC</option>
+                    </InputSelect>
+                    <button type="button" class="btn-cancel" @onclick=ToggleConferenceInput>X</button>
+                }
+                else
+                {
+                    <button type="button" class="btn-edit-form-enable" @onclick=ToggleConferenceInput>
+                        Edit Conference
+                    </button>
+                }
+            </div>
+            <div class="table-data">
+                @if (_showRegionInput)
+                {
+                    <InputSelect @bind-Value=_editModel.Region>
+                        <option value=@Shared.Enums.Region.North>North</option>
+                        <option value=@Shared.Enums.Region.South>South</option>
+                        <option value=@Shared.Enums.Region.East>East</option>
+                        <option value=@Shared.Enums.Region.West>West</option>
+                    </InputSelect>
+                    <button type="button" class="btn-cancel" @onclick=ToggleRegionInput>X</button>
+                }
+                else
+                {
+                    <button type="button" class="btn-edit-form-enable" @onclick=ToggleRegionInput>
+                        Edit Region
+                    </button>
+                }
+            </div>
+            <div class="table-data">
+                <button type="submit" class="btn-submit" @onclick=SubmitEdit>Submit</button>
+            </div>
+            <div class="table-data">
+                <button type="button" class="btn-cancel" @onclick=CancelEditTeam>Cancel</button>
+            </div>
+        </EditForm>
+    </div>
+}

@@ -1,0 +1,29 @@
+﻿<div class="nav-menu">
+    @if (!_seasonSelected)
+    {
+        <div class="row nav-top-row">
+            <span class="selected-season"></span>
+        </div>
+        <label class="season-select-warninga">Season not selected</label>
+        
+        <button type="button" class="btn-submit nav-item" @onclick=OnSelectSeason>
+            <span> Select Season </span>
+        </button>
+    }
+    else
+    {
+        <div class="row nav-top-row">
+            <sapn class="selected-season">@_selectedSeason</sapn>
+        </div>
+        <div class="nav-item">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="button" aria-hidden="true" /> Home
+            </NavLink>
+        </div>
+        <div class="nav-item">
+            <NavLink class="nav-link" href="teams">
+                <span class="button" aria-hidden="true" /> Teams
+            </NavLink>
+        </div>
+    }
+</div>

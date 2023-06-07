@@ -1,0 +1,26 @@
+﻿<div class="table teams-table">
+    <div class="table-row table-row-header">
+        <div class="table-data">Id</div>
+        <div class="table-data">Locale</div>
+        <div class="table-data">Name</div>
+        <div class="table-data">Abrv</div>
+        <div class="table-data">Division</div>
+    </div>
+
+    @foreach (var team in Teams)
+    {
+        bool showEditForm = false;
+
+        if (team.Id == teamToEditId)
+        {
+            showEditForm = true;
+        }
+        
+        <TeamsListItem Team=team
+                       ShowEditForm=showEditForm
+                       EnableEdit=CanEdit
+                       OnToggleShowEditForm=SelectTeamToEdit
+                       OnSubmitEdit=UpdateTeamData />
+
+    }
+</div>

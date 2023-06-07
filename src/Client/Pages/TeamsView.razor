@@ -1,0 +1,12 @@
+﻿@page "/teams"
+@if (!_teamsLoaded)
+{
+    <p>Teams not loaded...</p>
+}
+
+@if (_teamsLoaded)
+{
+    <TeamsList Teams=_teams
+               OnUpdateTeamData=UpdateTeamData
+               CanEdit=true/>
+}

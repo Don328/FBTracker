@@ -1,0 +1,12 @@
+﻿@page "/"
+
+@if(_seasonLoaded)
+{
+    <h3>Change Selected Sesason</h3>
+    <button type="button" class="btn-submit">Go</button>
+    <p class="warning-message">changing the selected season will discard any unsaved data.</p>
+}
+else
+{
+    <h3 class="warning-message">Season not selected...</h3>
+}

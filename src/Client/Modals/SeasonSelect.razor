@@ -1,0 +1,33 @@
+﻿<div class="modal">
+    <div class="modal-header">
+        <div class="container">
+            <div class="row">
+                <span class="modal-title">
+                    Season Select
+                </span>
+                <button type="button" class="btn-cancel" @onclick=OnCancel>X</button>
+            </div>
+        </div>
+    </div>
+    <div class="modal-body">
+        <div class="contianer">
+            <EditForm Model=_model>
+                <div class="row">
+                    <span class="form-label">Season:</span>
+                    <InputNumber id="season-select-input" @bind-Value=_model.Season>2022</InputNumber>
+                    <div class="row">
+                        <button type="submit" class="btn-submit" @onclick=OnSubmit>
+                            Submit
+                        </button>
+                        <button class="btn-cancel" @onclick=OnCancel>
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+    <div class="modal-footer">
+        Select the season to input/edit/view data
+    </div>
+</div>
