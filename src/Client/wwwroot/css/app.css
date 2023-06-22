@@ -117,7 +117,12 @@ article{
     color:var(--color-amber);
 }
 
+.success-message {
+    color:var(--color-jade);
+}
+
 .warning-message {
+    color:var(--color-orange);
 }
 
 .nav-item {
@@ -223,7 +228,15 @@ article{
     margin:.5rem;
 }
 
-.table-row-header {
+.table-header {
+    background: radial-gradient(var(--color-jet) -10%, var(--color-oxford_blue) 70%);
+    margin-top:.5rem;
+}
+
+.head-button {
+    width:6rem;
+    background-color:transparent;
+    border-color:transparent;
     color:var(--color-jade);
 }
 
@@ -235,3 +248,75 @@ article{
 .teams-table .table-data{
     width:6rem;
 }
+
+.team-list-button{
+    color:var(--color-amber);
+    background: radial-gradient(var(--color-jet) -10%, var(--color-oxford_blue) 70%);
+    border-color:transparent;
+}
+
+.team-list-button:hover {
+    background: radial-gradient(var(--color-jet) -10%, var(--color-celestial_blue) 70%);
+}
+
+.card {
+    background:var(--color-oxford_blue);
+    padding:2rem;
+    padding-top:.5rem;
+    margin:6rem;
+    color:var(--color-jade);
+    border-radius:2rem;
+}
+
+.card-header {
+}
+
+.card-body {
+    border-color:var(--color-amber);
+    border-top-width:.1rem;
+    border-bottom-width:.1rem;
+    border-top-style:solid;
+    border-bottom-style:solid;    
+    padding-bottom:1rem;
+
+}
+
+.card-footer {
+
+}
+
+.schedule-display {
+
+}
+
+.schedule-display-item {
+
+}
+
+.game-schedule-form {
+    color:var(--color-amber);
+    font-size:large;
+}
+
+.week-select-label {
+    padding-right:.5rem;
+}
+
+.game-type-select-label {
+    padding-left:1rem;
+    padding-right:.5rem;
+}
+
+.gameday-select-label {
+    padding-left:1rem;
+    padding-right:.5rem;
+}
+
+.oppo-select-label {
+    padding-right:.5rem;
+}
+
+.schedule-select-box {
+    margin:.5rem;
+}
+

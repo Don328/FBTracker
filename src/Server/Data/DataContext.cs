@@ -1,4 +1,5 @@
-﻿using MySqlConnector;
+﻿using FBTracker.Server.Data.Schema.Genesis;
+using MySqlConnector;
 
 namespace FBTracker.Server.Data;
 
@@ -17,23 +18,13 @@ public class DataContext
 
     private async Task EnsureDbExists()
     {
-        await _conn.OpenAsync();
-
-
-        await _conn.CloseAsync();
-
+        MariaDbDatabase.EnsureExists(_conn);
+        DbTables.EnsureExists(_conn);
         await Task.CompletedTask;
     }
 
     internal async Task<MySqlConnection> GetConnectionAsync()
     {
-        await _conn.OpenAsync();
         return await Task.FromResult(_conn);
-    }
-
-    internal async Task CloseConnection()
-    {
-        await _conn.CloseAsync();
-        await Task.CompletedTask;
     }
 }

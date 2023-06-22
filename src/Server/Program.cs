@@ -1,5 +1,5 @@
 using FBTracker.Server.Data;
-using FBTracker.Server.State;
+using FBTracker.Server.Data.Services;
 using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,7 +8,9 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
 builder.Services.AddSingleton<DataContext>();
-builder.Services.AddSingleton<AppState>();
+builder.Services.AddTransient<StateService>();
+builder.Services.AddTransient<ScheduledGamesService>();
+builder.Services.AddTransient<TeamsService>();
 
 var app = builder.Build();
 

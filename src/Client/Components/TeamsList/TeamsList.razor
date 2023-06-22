@@ -1,26 +1,38 @@
 ﻿<div class="table teams-table">
-    <div class="table-row table-row-header">
-        <div class="table-data">Id</div>
-        <div class="table-data">Locale</div>
-        <div class="table-data">Name</div>
-        <div class="table-data">Abrv</div>
-        <div class="table-data">Division</div>
+    <div class="table-header">
+        <button type="button" class="head-button" @onclick=SortByLocale>Locale</button>
+        <button type ="button" class="head-button" @onclick=SortByName>Name</button>
+        <button type="button" class="head-button" @onclick=SortByAbrev>Abrev</button>
+        <button type="button" class="head-button" @onclick=SortByDivision>Divison</button>
     </div>
 
     @foreach (var team in Teams)
     {
         bool showEditForm = false;
 
-        if (team.Id == teamToEditId)
+        if (team.Id == _teamToEditId)
         {
             showEditForm = true;
         }
-        
         <TeamsListItem Team=team
                        ShowEditForm=showEditForm
                        EnableEdit=CanEdit
                        OnToggleShowEditForm=SelectTeamToEdit
-                       OnSubmitEdit=UpdateTeamData />
+                       OnSubmitEdit=UpdateTeamData 
+                       OnSelectTeamDetails=ShowTeamDetails/>
+    }
 
+    @if(Teams.Count() 
+        < StateConstants.numberOfTeams)
+    {
+        <p class="warning-message">You must have 32 teams</p>
+        <AddTeamForm SubmitNewTeamData=SubmitNewTeamData />
+    }
+
+    @if(Teams.Count() 
+        == StateConstants.numberOfTeams 
+        && CanEdit)
+    {
+        <button type="button" class="btn-submit" @onclick=Confirm>Confirm Teams</button>
     }
 </div>

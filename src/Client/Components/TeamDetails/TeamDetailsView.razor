@@ -1,0 +1,44 @@
+﻿<div class="card">
+    <div class="card-header">
+        <h2>@Team.Locale @Team.Name</h2>
+    </div>
+    <div class="card-body">
+        <h3>@Team.Abrev</h3>
+        <span>@Team.Division</span>
+    </div>
+    <div class="card-footer">
+        @if (Schedule.Count() < 18)
+        {
+            <div class="col">
+                <div class="row">
+                    <h3 class="warning-message">
+                        Team Schedule not complete for current season
+                    </h3>
+                </div>
+                <div class="row">
+                    @if (_showAddGameForm)
+                    {
+                        <ScheduleGameForm UnscheduledWeeks=_unscheduledGames
+                                          Teams=Teams.ToList()
+                                          SelectedTeam=Team
+                                          ByeWeekScheduled=_byeWeekExists 
+                                          OnSubmit=ScheduleNewGame/>
+
+                        <button type="button" class="btn-cancel" @onclick=ToggleShowAddGameForm>Cancel</button>
+                    }
+                    else
+                    {
+                        <button type="button" class="btn-submit" @onclick=ToggleShowAddGameForm>Add Game To Schedule</button>
+                    }
+                </div>
+            </div>
+        }
+        @if (Schedule.Any())
+        {
+            foreach (var game in Schedule)
+            {
+                <ScheduledGameDisplay ScheduleData=game />
+            }
+        }
+    </div>
+</div>

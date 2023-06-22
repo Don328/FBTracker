@@ -1,96 +1,96 @@
-﻿using FBTracker.Shared.HardValues.EndpointTags;
+﻿using FBTracker.Shared.GloblaConstants;
+using FBTracker.Shared.GloblaConstants.EndpointTags;
 using FBTracker.Shared.Models;
+using System.Data;
 using System.Net.Http.Json;
 using static System.Net.WebRequestMethods;
 
 namespace FBTracker.Client.DataAccess;
 
-public static class StateAccess
+internal static class StateAccess
 {
-    public static async Task<bool> CheckSeasonLoaded(HttpClient http)
+    internal static async Task<int> GetSelectedSeason(
+        HttpClient http)
     {
-        var url = http.BaseAddress +
+        var response = await http.PostAsJsonAsync(
+            http.BaseAddress +
             StateRouteNames.controller_route + "/" +
-            StateRouteNames.seasonSelected;
+            StateRouteNames.selected_season,
+            StateConstants.defaultUserId);
 
-        var seasonSelected = await http.GetFromJsonAsync<bool>(url);
-
-        return await Task.FromResult(seasonSelected);
-    }
-
-    public static async Task<int> GetSelectedSeason(HttpClient http)
-    {
-        var url = http.BaseAddress +
-    StateRouteNames.controller_route + "/" +
-    StateRouteNames.season;
-
-        var response = await http.GetFromJsonAsync(url, typeof(int));
-        if (response is not null)
+        if (response.IsSuccessStatusCode)
         {
-            var success = Int32.TryParse(
-                response.ToString(),
-                out int result);
-
-            if (success)
-                return await Task
-                    .FromResult(result);
+            return await response.Content
+                .ReadFromJsonAsync<int>();
         }
 
         return -1;
     }
 
-    public static async Task<bool> SetSelectedSeason(HttpClient http, int season)
+    internal static async Task<bool> SetSelectedSeason(
+        HttpClient http,
+        int season)
     {
-        var url = http.BaseAddress +
-    StateRouteNames.controller_route + "/" +
-    StateRouteNames.season;
-
-        var response = await http.PostAsJsonAsync(url, season);
-
-        if (response.IsSuccessStatusCode)
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    public static async Task<bool> CheckTeamsLoaded(HttpClient http)
-    {
-        var response = await http.GetAsync(
+        var response = await http.PostAsJsonAsync(
             http.BaseAddress +
             StateRouteNames.controller_route + "/" +
-            StateRouteNames.teamsLoaded);
+            StateRouteNames.select_season,
+            new Tuple<int, int>(
+                StateConstants.defaultUserId,
+                season));
 
-        if (response.IsSuccessStatusCode)
+        return await Task.FromResult(response.IsSuccessStatusCode);
+    }
+
+    internal static async Task<bool> CheckTeamsConfirmed(
+        HttpClient http,
+        int season)
+    {
+        var response = await http.PostAsJsonAsync(
+            http.BaseAddress +
+            StateRouteNames.controller_route + "/" +
+            StateRouteNames.teams_confirmed,
+            season);
+
+        if (response.IsSuccessStatusCode) 
         {
-            var result = await response.Content
+            return await response.Content
                 .ReadFromJsonAsync<bool>();
-
-            return result;
         }
 
         return false;
     }
 
-    public static async Task<IEnumerable<Team>> GetLoadedTeams(HttpClient http)
+    internal static async Task<bool> CheckScheduleConfirmed(
+        HttpClient http,
+        int season)
     {
-        var response = await http.GetAsync(
+        var response = await http.PostAsJsonAsync(
             http.BaseAddress +
             StateRouteNames.controller_route + "/" +
-            StateRouteNames.teams);
+            StateRouteNames.schedule_confirmed,
+            season);
 
         if (response.IsSuccessStatusCode)
         {
-            var result = await response.Content
-                .ReadFromJsonAsync<IEnumerable<Team>>();
-
-            if (result is not null)
-            {
-                return (IEnumerable<Team>)result;
-            }
+            return await response.Content
+                .ReadFromJsonAsync<bool>();
         }
 
-        return Enumerable.Empty<Team>();
+        return false;
+    }
+
+    internal static async Task<bool> ConfirmTeamsList(
+        HttpClient http,
+        int season)
+    {
+        var response = await http.PostAsJsonAsync(
+            http.BaseAddress +
+            StateRouteNames.controller_route + "/" +
+            StateRouteNames.confirm_teams_list,
+            season);
+
+        if (response.IsSuccessStatusCode) 
+        { return true; } return false;
     }
 }

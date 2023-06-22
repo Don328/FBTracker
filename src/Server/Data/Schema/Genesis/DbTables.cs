@@ -6,16 +6,52 @@ namespace FBTracker.Server.Data.Schema.Genesis;
 
 internal static class DbTables
 {
-    internal static void EnsureExists(MySqlConnection conn)
+    internal static async void EnsureExists(MySqlConnection conn)
     {
-        new MySqlCommand(CreateTable.Teams, conn).ExecuteNonQuery();
+
+        conn.Open();
+        await new MySqlCommand(CreateTable.userState, conn).ExecuteNonQueryAsync();
+        await new MySqlCommand(CreateTable.teams, conn).ExecuteNonQueryAsync();
+        await new MySqlCommand(CreateTable.seasonPrep, conn).ExecuteNonQueryAsync();
+        await new MySqlCommand(CreateTable.scheduledGames, conn).ExecuteNonQueryAsync();
+        await conn.CloseAsync();
+        await SeedUser_1(conn);
+        await Seed2021Data(conn);
     }
 
-    internal static async Task Seed2021Teams(MySqlConnection conn)
+    internal static async Task SeedUser_1(MySqlConnection conn)
     {
-        var teams = await TeamsTable.ReadSeason(conn, 2021);
-        if (teams.Count() == 32) return;
+        var season = await UserStateTable.GetSelectedSeason(conn, 1);
 
+        if (season < 1)
+        {
+            conn.Open();
+            await new MySqlCommand(SeedData.user_1, conn).ExecuteNonQueryAsync();
+            await conn.CloseAsync();
+        }
+
+        await Task.CompletedTask;
+    }
+
+    internal static async Task Seed2021Data(MySqlConnection conn)
+    {
+        var seasonPrep = await SeasonPrepTable.ReadRecord(conn, 2021);
+        if (seasonPrep.Season == -1) await SeedSeasonPrep(conn);
+        
+        var teams = await TeamsTable.ReadSeason(conn, 2021);
+        if (teams.Count() < 32) await SeedTeams(conn);
+    }
+
+    private static async Task SeedSeasonPrep(MySqlConnection conn)
+    {
+        conn.Open();
+        await new MySqlCommand(SeedData.seasonPrep_2021, conn).ExecuteNonQueryAsync();
+        await conn.CloseAsync();
+    }
+
+    private static async Task SeedTeams(MySqlConnection conn)
+    {
+        conn.Open();
         await new MySqlCommand(SeedData.team_1, conn).ExecuteNonQueryAsync();
         await new MySqlCommand(SeedData.team_2, conn).ExecuteNonQueryAsync();
         await new MySqlCommand(SeedData.team_3, conn).ExecuteNonQueryAsync();
@@ -48,5 +84,6 @@ internal static class DbTables
         await new MySqlCommand(SeedData.team_30, conn).ExecuteNonQueryAsync();
         await new MySqlCommand(SeedData.team_31, conn).ExecuteNonQueryAsync();
         await new MySqlCommand(SeedData.team_32, conn).ExecuteNonQueryAsync();
+        await conn.CloseAsync();
     }
 }

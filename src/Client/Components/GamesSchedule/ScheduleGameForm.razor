@@ -1,0 +1,74 @@
+﻿<h3>Add Game To Schedule</h3>
+<EditForm class="game-schedule-form" Model=_editModel>
+    <div class="row">
+        <label class="week-select-label">Week</label>
+        <InputSelect class="schedule-select-box" @bind-Value=_editModel.Week>
+            @foreach (var week in UnscheduledWeeks)
+            {
+                @if (week is not null)
+                {
+                    <option value=@week>@week</option>
+                }
+            }
+        </InputSelect>
+        <label class="game-type-select-label">Home/Away</label>
+        <InputSelect class="schedule-select-box" @bind-Value=@SelectedGameType>
+            <option value=@GameType.Bye>@GameType.Bye</option>
+            <option value=@GameType.Home>@GameType.Home</option>
+            <option value=@GameType.Away>@GameType.Away</option>
+        </InputSelect>
+    </div>
+    <div class="row">
+        @switch (_gameType)
+        {
+            case GameType.Bye:
+                if (ByeWeekScheduled)
+                {
+                    <span class="warning-message">Bye week already scheduled</span>
+                }
+                break;
+            case GameType.Home:
+                <label class="oppo-select-label">Opponent</label>
+                <InputSelect class="schedule-select-box" @bind-Value=_editModel.AwayTeamId>
+                    @foreach (var team in Teams)
+                    {
+                        <option value=@team.Id>@team.Abrev</option>
+                    }
+                </InputSelect>
+                <label class="gameday-select-label">Game Day</label>
+                <InputSelect class="schedule-select-box" @bind-Value=_editModel.GameDay>
+                    <option value=@GameDay.ThursdayNight>Thursday Night</option>
+                    <option value=@GameDay.Saturday>Saturday</option>
+                    <option value=@GameDay.Sunday>Sunday</option>
+                    <option value=@GameDay.SundayNight>Sunday Night</option>
+                    <option value=@GameDay.MondayNight>Monday Night</option>
+                </InputSelect>
+                break;
+            case GameType.Away:
+                <label class="oppo-select-label">Opponent</label>
+                <InputSelect class="schedule-select-box" @bind-Value=_editModel.HomeTeamId>
+                    @foreach (var team in Teams)
+                    {
+                        <option value=@team.Id>@team.Abrev</option>
+                    }
+                </InputSelect>
+                <label class="gameday-select-label">Game Day</label>
+                <InputSelect class="schedule-select-box" @bind-Value=_editModel.GameDay>
+                    <option value=@GameDay.ThursdayNight>Thursday Night</option>
+                    <option value=@GameDay.Saturday>Saturday</option>
+                    <option value=@GameDay.Sunday>Sunday</option>
+                    <option value=@GameDay.SundayNight>Sunday Night</option>
+                    <option value=@GameDay.MondayNight>Monday Night</option>
+                </InputSelect>
+                break;
+        }
+    </div>
+        <button type="submit" class="btn-submit" @onclick=Submit>Submit</button>
+</EditForm>
+
+@foreach (var message in _error_messages)
+{
+    <div class="row">
+        <span class="warning-message">@message</span>
+    </div>
+}

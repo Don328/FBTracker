@@ -5,8 +5,10 @@ namespace FBTracker.Server.Data.Schema.Genesis;
 
 internal static class MariaDbDatabase
 {
-    internal static void EnsureExists(MySqlConnection conn)
+    internal static async void EnsureExists(MySqlConnection conn)
     {
+        conn.Open();
         new MySqlCommand(CreateDb.statDb, conn).ExecuteNonQuery();
+        await conn.CloseAsync();
     }
 }

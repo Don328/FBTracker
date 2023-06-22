@@ -1,0 +1,17 @@
+﻿<EditForm Model=_editModel>
+        <InputText @bind-Value=_editModel.Locale></InputText>
+        <InputText @bind-Value=_editModel.Name></InputText>
+        <InputText @bind-Value=_editModel.Abrev></InputText>
+        <InputSelect @bind-Value=_editModel.Conference>
+            <option value=@Shared.Enums.Conference.AFC>AFC</option>
+            <option value=@Shared.Enums.Conference.NFC>NFC</option>
+        </InputSelect>
+        <InputSelect @bind-Value=_editModel.Region>
+            <option value=@Shared.Enums.Region.North>North</option>
+            <option value=@Shared.Enums.Region.South>South</option>
+            <option value=@Shared.Enums.Region.East>East</option>
+            <option value=@Shared.Enums.Region.West>West</option>
+        </InputSelect>
+        <button type="submit" class="btn-submit" @onclick=SubmitNewTeam>Submit</button>
+        <button type="button" class="btn-cancel" @onclick=ClearForm>Clear Form</button>
+</EditForm>

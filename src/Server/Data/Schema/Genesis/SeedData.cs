@@ -1,19 +1,42 @@
-﻿namespace FBTracker.Server.Data.Schema.Genesis;
+﻿using FBTracker.Server.Data.Schema.Constants;
+
+namespace FBTracker.Server.Data.Schema.Genesis;
 
 internal static class SeedData
 {
-    private const string header =
-        @"INSERT INTO Teams(
-            Id,
-            Season,
-            Locale,
-            Name,
-            Abrev,
-            Conference,
-            Region)";
+    private const string userState_header =
+        "INSERT INTO " +
+        $"{TableNames.userState}(" +
+        $"{PropertyNames.id}, " +
+        $"{PropertyNames.season}) ";
+
+    private const string teams_header =
+        "INSERT INTO " +
+        $"{TableNames.teams}(" +
+        $"{PropertyNames.id}, " +
+        $"{PropertyNames.season}, " +
+        $"{PropertyNames.locale}, " +
+        $"{PropertyNames.name}, " +
+        $"{PropertyNames.abrev}, " +
+        $"{PropertyNames.conference}, " +
+        $"{PropertyNames.region}) ";
+
+    private const string seasonPrep_header =
+        "INSERT INTO " +
+        $"{TableNames.seasonPrep}(" +
+        $"{PropertyNames.id}, " +
+        $"{PropertyNames.season}, " +
+        $"{PropertyNames.teamsConfirmed}," +
+        $"{PropertyNames.schedulesLoaded}) ";
+
+    internal const string user_1 =
+        userState_header + @"
+        VALUES(
+            1,
+            2022);";
 
     internal const string team_1 =
-        header + @"
+        teams_header + @"
         VALUES(
             1,
             2021,
@@ -24,7 +47,7 @@ internal static class SeedData
             3)";
 
     internal const string team_2 =
-        header + @"
+        teams_header + @"
         VALUES(
             2,
             2021,
@@ -35,7 +58,7 @@ internal static class SeedData
             1)";
 
     internal const string team_3 =
-        header + @"
+        teams_header + @"
         VALUES(
             3,
             2021,
@@ -46,7 +69,7 @@ internal static class SeedData
             0)";
 
     internal const string team_4 =
-        header + @"
+        teams_header + @"
         VALUES(
             4,
             2021,
@@ -57,7 +80,7 @@ internal static class SeedData
             2)";
 
     internal const string team_5 =
-        header + @"
+        teams_header + @"
         VALUES(
             5,
             2021,
@@ -68,7 +91,7 @@ internal static class SeedData
             1)";
 
     internal const string team_6 =
-        header + @"
+        teams_header + @"
         VALUES(
             6,
             2021,
@@ -79,7 +102,7 @@ internal static class SeedData
             0)";
 
     internal const string team_7 =
-        header + @"
+        teams_header + @"
         VALUES(
             7,
             2021,
@@ -90,7 +113,7 @@ internal static class SeedData
             0)";
 
     internal const string team_8 =
-        header + @"
+        teams_header + @"
         VALUES(
             8,
             2021,
@@ -101,7 +124,7 @@ internal static class SeedData
             0)";
 
     internal const string team_9 =
-        header + @"
+        teams_header + @"
         VALUES(
             9,
             2021,
@@ -112,7 +135,7 @@ internal static class SeedData
             2)";
 
     internal const string team_10 =
-        header + @"
+        teams_header + @"
         VALUES(
             10,
             2021,
@@ -123,7 +146,7 @@ internal static class SeedData
             3)";
 
     internal const string team_11 =
-        header + @"
+        teams_header + @"
         VALUES(
             11,
             2021,
@@ -134,7 +157,7 @@ internal static class SeedData
             0)";
 
     internal const string team_12 =
-        header + @"
+        teams_header + @"
         VALUES(
             12,
             2021,
@@ -145,7 +168,7 @@ internal static class SeedData
             0)";
 
     internal const string team_13 =
-        header + @"
+        teams_header + @"
         VALUES(
             13,
             2021,
@@ -156,7 +179,7 @@ internal static class SeedData
             1)";
 
     internal const string team_14 =
-        header + @"
+        teams_header + @"
         VALUES(
             14,
             2021,
@@ -167,7 +190,7 @@ internal static class SeedData
             1)";
 
     internal const string team_15 =
-        header + @"
+        teams_header + @"
         VALUES(
             15,
             2021,
@@ -178,7 +201,7 @@ internal static class SeedData
             1)";
 
     internal const string team_16 =
-        header + @"
+        teams_header + @"
         VALUES(
             16,
             2021,
@@ -189,7 +212,7 @@ internal static class SeedData
             3)";
 
     internal const string team_17 =
-        header + @"
+        teams_header + @"
         VALUES(
             17,
             2021,
@@ -200,7 +223,7 @@ internal static class SeedData
             3)";
 
     internal const string team_18 =
-        header + @"
+        teams_header + @"
         VALUES(
             18,
             2021,
@@ -211,7 +234,7 @@ internal static class SeedData
             3)";
 
     internal const string team_19 =
-        header + @"
+        teams_header + @"
         VALUES(
             19,
             2021,
@@ -222,7 +245,7 @@ internal static class SeedData
             3)";
 
     internal const string team_20 =
-        header + @"
+        teams_header + @"
         VALUES(
             20,
             2021,
@@ -233,7 +256,7 @@ internal static class SeedData
             2)";
 
     internal const string team_21 =
-        header + @"
+        teams_header + @"
         VALUES(
             21,
             2021,
@@ -244,7 +267,7 @@ internal static class SeedData
             0)";
 
     internal const string team_22 =
-        header + @"
+        teams_header + @"
         VALUES(
             22,
             2021,
@@ -255,7 +278,7 @@ internal static class SeedData
             2)";
 
     internal const string team_23 =
-        header + @"
+        teams_header + @"
         VALUES(
             23,
             2021,
@@ -266,7 +289,7 @@ internal static class SeedData
             1)";
 
     internal const string team_24 =
-        header + @"
+        teams_header + @"
         VALUES(
             24,
             2021,
@@ -277,7 +300,7 @@ internal static class SeedData
             2)";
 
     internal const string team_25 =
-        header + @"
+        teams_header + @"
         VALUES(
             25,
             2021,
@@ -288,7 +311,7 @@ internal static class SeedData
             2)";
 
     internal const string team_26 =
-        header + @"
+        teams_header + @"
         VALUES(
             26,
             2021,
@@ -299,7 +322,7 @@ internal static class SeedData
             2)";
 
     internal const string team_27 =
-        header + @"
+        teams_header + @"
         VALUES(
             27,
             2021,
@@ -310,7 +333,7 @@ internal static class SeedData
             0)";
 
     internal const string team_28 =
-        header + @"
+        teams_header + @"
         VALUES(
             28,
             2021,
@@ -321,7 +344,7 @@ internal static class SeedData
             3)";
 
     internal const string team_29 =
-        header + @"
+        teams_header + @"
         VALUES(
             29,
             2021,
@@ -332,7 +355,7 @@ internal static class SeedData
             3)";
 
     internal const string team_30 =
-        header + @"
+        teams_header + @"
         VALUES(
             30,
             2021,
@@ -343,7 +366,7 @@ internal static class SeedData
             1)";
 
     internal const string team_31 =
-        header + @"
+        teams_header + @"
         VALUES(
             31,
             2021,
@@ -354,7 +377,7 @@ internal static class SeedData
             1)";
 
     internal const string team_32 =
-        header + @"
+        teams_header + @"
         VALUES(
             32,
             2021,
@@ -363,4 +386,12 @@ internal static class SeedData
             'WAS',
             1,
             2)";
+
+    internal const string seasonPrep_2021 =
+        seasonPrep_header + @"
+        VALUES(
+            1,
+            2021,
+            1,
+            0)";
 }

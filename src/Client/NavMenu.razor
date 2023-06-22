@@ -1,10 +1,11 @@
 ﻿<div class="nav-menu">
-    @if (!_seasonSelected)
+    @if (_selectedSeason < StateConstants.seasonMin ||
+        _selectedSeason > StateConstants.seasonMax)
     {
         <div class="row nav-top-row">
             <span class="selected-season"></span>
         </div>
-        <label class="season-select-warninga">Season not selected</label>
+        <label class="season-select-warning">Season not selected</label>
         
         <button type="button" class="btn-submit nav-item" @onclick=OnSelectSeason>
             <span> Select Season </span>

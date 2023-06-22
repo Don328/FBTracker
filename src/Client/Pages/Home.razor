@@ -1,10 +1,48 @@
 ﻿@page "/"
 
-@if(_seasonLoaded)
+@if (_season > StateConstants.seasonMin &&
+    _season < StateConstants.seasonMax)
 {
-    <h3>Change Selected Sesason</h3>
-    <button type="button" class="btn-submit">Go</button>
-    <p class="warning-message">changing the selected season will discard any unsaved data.</p>
+    <div class="col">
+        <h3>Change Selected Sesason</h3>
+        <button type="button" class="btn-submit" @onclick=ShowChangeSeasonForm>Go</button>
+        <p class="warning-message">changing the selected season will discard any unsaved data.</p>
+    </div>
+    <div class="col">
+        <div class="row">
+            <span class="success-message">Season Loaded</span>
+        </div>
+        @if (_teamsConfirmed)
+        {
+            <div class="row">
+                <span class="success-message">Teams Confirmed</span>
+            </div>
+
+        }
+        else
+        {
+            <div class="row">
+                <span class="warning-message">Teams Not Confirmed</span>
+            </div>
+
+        }
+        @if (_schedulesConfirmed)
+        {
+            <div class="row">
+                <span class="success-message">Schedules Loaded</span>
+            </div>
+
+        }
+        else
+        {
+            <div class="row">
+                <span class="warning-message">Schedules Not Loaded</span>
+            </div>
+
+        }
+    </div>
+
+
 }
 else
 {

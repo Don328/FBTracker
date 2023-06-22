@@ -1,8 +1,8 @@
 ﻿using Blazored.Modal.Services;
 using FBTracker.Client.DataAccess;
 using FBTracker.Client.Modals;
-using FBTracker.Shared.HardValues;
-using FBTracker.Shared.HardValues.EndpointTags;
+using FBTracker.Shared.GloblaConstants;
+using FBTracker.Shared.GloblaConstants.EndpointTags;
 using Microsoft.AspNetCore.Components;
 using System.Net.Http.Json;
 
@@ -10,42 +10,31 @@ namespace FBTracker.Client;
 
 public partial class NavMenu : ComponentBase
 {
-    private bool _seasonSelected = default!;
-    private int _selectedSeason = default!;
+    private int _selectedSeason = 0;
 
     [Inject]
     public HttpClient Http { get; set; } = default!;
+
+    [Inject]
+    public NavigationManager NavMan { get; set; } = default!;
 
     [CascadingParameter]
     public IModalService Modal { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
-        _seasonSelected = await StateAccess
-            .CheckSeasonLoaded(Http);
-        
-        if (_seasonSelected)
-        {
-            await StateAccess.GetSelectedSeason(Http);
-        }
-
+        _selectedSeason = await StateAccess
+            .GetSelectedSeason(Http);
         await Task.CompletedTask;
     }
 
     private async Task OnSelectSeason()
     {
-        var seasonSelect = Modal.Show<SeasonSelect>();
-        var result = await seasonSelect.Result;
-
-        if (result.Confirmed && 
-            result.Data is not null)
+        var season = await SeasonSelectService.Show(Modal);
+        if (season is not null)
         {
-            var season = Int32.Parse(result.Data.ToString()??"");
-            if (season > StateConstants.seasonMin &&
-                season < StateConstants.seasonMax)
-            {
-                await SetSelectedSeason(season);
-            }
+            await SetSelectedSeason((int)season);
+            NavMan.NavigateTo("/", true);
         }
 
         await Task.CompletedTask;
@@ -53,16 +42,8 @@ public partial class NavMenu : ComponentBase
 
     private async Task SetSelectedSeason(int season)
     {
-        var success = await StateAccess.SetSelectedSeason(Http, season);
-        if (success)
-        {
-            _seasonSelected = await StateAccess.CheckSeasonLoaded(Http);
-            if (_seasonSelected)
-            {
-                _selectedSeason = await StateAccess.GetSelectedSeason(Http);
-            }
-        }
-
+        await StateAccess.SetSelectedSeason(Http, season);
+        _selectedSeason = await StateAccess.GetSelectedSeason(Http);
         await Task.CompletedTask;
     }
 }

@@ -1,12 +1,47 @@
 ﻿@page "/teams"
-@if (!_teamsLoaded)
+@if (!TeamsLoaded)
 {
-    <p>Teams not loaded...</p>
+    if (!_showLoadPreviousTeams)
+    {
+        <p>Teams not loaded...</p>
+        <p>Import teams list from previous season?</p>
+        <button type="button" class="btn-submit" @onclick=ToggleShowLoadPreviousTeams>Go</button>
+    }
+    else
+    {
+        <EditForm Model=_previousSeasonToLoad>
+            <InputNumber @bind-Value=_previousSeasonToLoad></InputNumber>
+            <button type="submit" class="btn-submit" @onclick=LoadPreviousSeasonTeams>Load</button>
+            <button type="button" class="btn-cancel" @onclick=ToggleShowLoadPreviousTeams>Cancel</button>
+        </EditForm>
+    }
 }
 
-@if (_teamsLoaded)
+@if (TeamsLoaded)
 {
-    <TeamsList Teams=_teams
-               OnUpdateTeamData=UpdateTeamData
-               CanEdit=true/>
+    if (_teamsConfirmed)
+    {
+        <div class="col">
+            <TeamsList Teams=_teams
+                       CanEdit=false
+                       OnShowTeamDetails=SelectTeamDetails />
+        </div>
+        <div class="col">
+            @if (_selectedTeam.Id > 0)
+            {
+                <TeamDetailsView Team=_selectedTeam
+                                 Schedule=_selectedTeamSchedule
+                                 Teams=_teams
+                                 OnSubmitGameSchedule=SubmitNewScheduledGame />
+            }
+        </div>
+    }
+    else
+    {
+        <TeamsList Teams=_teams
+                   CanEdit=true
+                   OnUpdateTeamData=UpdateTeamData
+                   OnConfirm=ConfirmTeamsList
+                   OnSubmitNewTeam=SubmitNewTeam />
+    }
 }

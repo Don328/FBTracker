@@ -23,6 +23,8 @@ internal static class ParamBuilder
             p.DbType = DbType.String;
         else if (type == typeof(DateTime))
             p.DbType = DbType.DateTime2;
+        else if (type == typeof(bool))
+            p.DbType = DbType.Int32;
         else throw new ArgumentException(
             $"Unrecognized type: {type}");
 
