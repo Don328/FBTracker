@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FBTracker.Client.Components.TeamsList;
+namespace FBTracker.Client.Areas.Teams.TeamsList;
 public partial class AddTeamForm : ComponentBase
 {
     [Parameter]

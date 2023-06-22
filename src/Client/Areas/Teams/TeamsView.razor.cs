@@ -2,7 +2,7 @@
 using FBTracker.Shared.Models;
 using Microsoft.AspNetCore.Components;
 
-namespace FBTracker.Client.Pages;
+namespace FBTracker.Client.Areas.Teams;
 public partial class TeamsView : ComponentBase
 {
     [Inject]
@@ -28,7 +28,7 @@ public partial class TeamsView : ComponentBase
         _teams = await TeamsAccess.GetTeams(Http, _season);
         _teamsConfirmed = await StateAccess.CheckTeamsConfirmed(Http, _season);
 
-        
+
         CheckTeamsConfirmed();
 
         await Task.CompletedTask;
@@ -43,7 +43,7 @@ public partial class TeamsView : ComponentBase
     {
         _teams = Enumerable.Empty<Team>();
         _teams = await TeamsAccess.GetTeams(Http, _season);
-        
+
         await Task.CompletedTask;
     }
 
@@ -53,7 +53,7 @@ public partial class TeamsView : ComponentBase
             Http,
             team);
 
-        if(success)
+        if (success)
         {
             await GetTeams();
         }
@@ -70,7 +70,7 @@ public partial class TeamsView : ComponentBase
     {
         var season = await StateAccess.GetSelectedSeason(Http);
         _teams = await TeamsAccess.LoadPreviousSeasonTeams(
-            Http, 
+            Http,
             fromSeason: _previousSeasonToLoad,
             toSeason: season);
     }
@@ -79,7 +79,7 @@ public partial class TeamsView : ComponentBase
     {
         await StateAccess
             .ConfirmTeamsList(Http, _season);
-        
+
         _teamsConfirmed = await StateAccess
             .CheckTeamsConfirmed(Http, _season);
     }

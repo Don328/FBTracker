@@ -1,6 +1,6 @@
 ﻿using Blazored.Modal.Services;
 using FBTracker.Client.DataAccess;
-using FBTracker.Client.Modals;
+using FBTracker.Client.Areas.ModalForms.SeasonSelect;
 using FBTracker.Shared.GloblaConstants;
 using FBTracker.Shared.GloblaConstants.EndpointTags;
 using Microsoft.AspNetCore.Components;

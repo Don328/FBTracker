@@ -1,14 +1,14 @@
 ﻿using Blazored.Modal.Services;
 using FBTracker.Client.DataAccess;
-using FBTracker.Client.Modals;
 using FBTracker.Shared.GloblaConstants.EndpointTags;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Json;
+using FBTracker.Client.Areas.ModalForms.SeasonSelect;
 
-namespace FBTracker.Client.Pages;
+namespace FBTracker.Client.Areas.Home;
 public partial class Home : ComponentBase
 {
     private int _season = 0;

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FBTracker.Client.Components.TeamDetails;
+namespace FBTracker.Client.Areas.Teams.TeamDetails;
 public partial class TeamDetailsView : ComponentBase
 {
     [Parameter]

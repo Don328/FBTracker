@@ -2,7 +2,7 @@
 using FBTracker.Shared.GloblaConstants;
 using System.Reflection;
 
-namespace FBTracker.Client.Modals;
+namespace FBTracker.Client.Areas.ModalForms.SeasonSelect;
 
 internal static class SeasonSelectService
 {

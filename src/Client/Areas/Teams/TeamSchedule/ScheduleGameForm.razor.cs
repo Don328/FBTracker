@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FBTracker.Client.Components.GamesSchedule;
+namespace FBTracker.Client.Areas.Teams.TeamSchedule;
 public partial class ScheduleGameForm : ComponentBase
 {
     [Parameter]

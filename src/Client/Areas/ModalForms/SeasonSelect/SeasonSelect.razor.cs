@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FBTracker.Client.Modals;
+namespace FBTracker.Client.Areas.ModalForms.SeasonSelect;
 public partial class SeasonSelect : ComponentBase
 {
     [CascadingParameter]
