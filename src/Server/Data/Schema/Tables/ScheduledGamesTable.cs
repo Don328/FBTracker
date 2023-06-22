@@ -33,7 +33,7 @@ internal static class ScheduledGamesTable
 
         conn.Open();
         await cmd.ExecuteNonQueryAsync();
-        await conn.OpenAsync();
+        await conn.CloseAsync();
         
         return await Task.FromResult(id);
     }

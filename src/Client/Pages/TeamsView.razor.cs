@@ -119,8 +119,11 @@ public partial class TeamsView : ComponentBase
 
     private async Task SubmitNewScheduledGame(ScheduledGame game)
     {
+        int selectedTeamId = _selectedTeam.Id;
         game.Season = _season;
         await GamesAccess.SaveNewScheduleRecord(Http, game);
+        _selectedTeam = new();
+        await SelectTeamDetails(selectedTeamId);
         await Task.CompletedTask;
     }
 }

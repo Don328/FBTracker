@@ -74,8 +74,6 @@ public partial class ScheduleGameForm : ComponentBase
 
     private async Task Submit()
     {
-
-
         if (IsValid())
         {
             await OnSubmit.InvokeAsync(_editModel);

@@ -36,6 +36,7 @@ public partial class TeamDetailsView : ComponentBase
 
     private async Task ScheduleNewGame(ScheduledGame game)
     {
+        _showAddGameForm = false;
         await OnSubmitGameSchedule.InvokeAsync(game);
     }
 

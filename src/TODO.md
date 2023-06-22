@@ -81,7 +81,7 @@ The application should implement a logging client. This needs to be initiated be
 API calls using multiple parameters, particulary multiple parameters of the same `Type` should be packaged into some sort of query object
 
 - [ ] Create query objects in Shared project
-- [ ] Modify Controllers (Server) to require query objects instead of Tuple and int[] for multiple parameters
+- [ ] Modify Controllers (Server) to require query objects instead of Tuple, int[], etc. for multiple parameters
 - [ ] Modify DataAccess classes (Client) to use query objects
 
 ---
