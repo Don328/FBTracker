@@ -5,12 +5,16 @@ using FBTracker.Shared.GloblaConstants;
 using FBTracker.Shared.GloblaConstants.EndpointTags;
 using Microsoft.AspNetCore.Components;
 using System.Net.Http.Json;
+using FBTracker.Shared.QueryObjects.State;
 
 namespace FBTracker.Client;
 
 public partial class NavMenu : ComponentBase
 {
     private int _selectedSeason = 0;
+
+    [Inject]
+    public ILogger<NavMenu> Logger { get; set; } = default!;
 
     [Inject]
     public HttpClient Http { get; set; } = default!;
@@ -30,10 +34,12 @@ public partial class NavMenu : ComponentBase
 
     private async Task OnSelectSeason()
     {
+        Logger.LogInformation("SeasonSelect form selected");
         var season = await SeasonSelectService.Show(Modal);
         if (season is not null)
         {
             await SetSelectedSeason((int)season);
+            Logger.LogInformation($"Season selected: {season}");
             NavMan.NavigateTo("/", true);
         }
 
@@ -42,8 +48,12 @@ public partial class NavMenu : ComponentBase
 
     private async Task SetSelectedSeason(int season)
     {
-        await StateAccess.SetSelectedSeason(Http, season);
+        var query = new UserStateQuery 
+        { SelectedSeason = season};
+        Logger.LogInformation($"Setting selected season season: {season}");
+        await StateAccess.SetSelectedSeason(Http, query);
         _selectedSeason = await StateAccess.GetSelectedSeason(Http);
+        Logger.LogInformation($"Season set: {_selectedSeason}");
         await Task.CompletedTask;
     }
 }

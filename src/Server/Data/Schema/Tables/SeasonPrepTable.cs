@@ -6,15 +6,22 @@ using System.Security.Cryptography;
 
 namespace FBTracker.Server.Data.Schema.Tables;
 
-internal static class SeasonPrepTable
+internal class SeasonPrepTable
 {
-    internal static async Task Create(
-        MySqlConnection conn, SeasonPrepRecord record)
+    private readonly MySqlConnection _conn;
+    private int _season;
+
+    public SeasonPrepTable(MySqlConnection conn)
+    {
+        _conn = conn;
+    }
+
+    internal async Task Create(SeasonPrepRecord record)
     {
         int id = await TableIdService.GetNextId(
-            conn, GetIdsInUse.seasonPrep);
+            _conn, GetIdsInUse.seasonPrep);
 
-        using (var cmd = conn.CreateCommand())
+        using (var cmd = _conn.CreateCommand())
         {
 
             cmd.CommandText = CreateRow.seasonPrep;
@@ -23,105 +30,102 @@ internal static class SeasonPrepTable
             ParamBuilder.Build(cmd, ParameterNames.teamsConfirmed, record.TeamsConfirmed);
             ParamBuilder.Build(cmd, ParameterNames.schedulesLoaded, record.ScheduleConfirmed);
 
-            conn.Open();
+            _conn.Open();
             await cmd.ExecuteNonQueryAsync();
-            await conn.CloseAsync();
+            await _conn.CloseAsync();
         }
 
         await Task.CompletedTask;
     }
 
-    internal static async Task<SeasonPrepRecord> ReadRecord(
-        MySqlConnection conn, int season)
+    internal SeasonPrepTable WithSeason(int season)
+    {
+        _season = season;
+        return this;
+    }
+
+    internal async Task<SeasonPrepRecord> ReadRecord()
     {
         SeasonPrepRecord record = default!;
-        int record_id = -1;
-        int record_season = -1;
-        bool record_teamsConfirmed = false;
-        bool record_schedulesLoaded = false;
 
-        using (var cmd = conn.CreateCommand())
+        using (var cmd = _conn.CreateCommand())
         {
-            cmd.CommandText = ReadRow.seasonPrep_bySeason;
-            ParamBuilder.Build(cmd, ParameterNames.season, season);
 
-            conn.Open();
+            cmd.CommandText = ReadRow.seasonPrep_bySeason;
+            ParamBuilder.Build(cmd, ParameterNames.season, _season);
+
+            _conn.Open();
             using var reader = await cmd.ExecuteReaderAsync();
 
             while (reader.Read())
             {
-                record_id = reader.GetInt32(0);
-                record_season = reader.GetInt32(1);
-                record_teamsConfirmed = reader.GetBoolean(2);
-                record_schedulesLoaded = reader.GetBoolean(3);
+                record = await ReadRecord(reader);
             }
 
-            await conn.CloseAsync();
-
-            record = new SeasonPrepRecord(
-                Id: record_id,
-                Season: record_season,
-                TeamsConfirmed: record_teamsConfirmed,
-                ScheduleConfirmed: record_schedulesLoaded);
-
+            await _conn.CloseAsync();
         }
 
         return await Task.FromResult(record);
     }
 
-    internal static async Task<IEnumerable<SeasonPrepRecord>> ReadAll(
-        MySqlConnection conn)
+    internal async Task<IEnumerable<SeasonPrepRecord>> ReadAll()
     {
         var records = new List<SeasonPrepRecord>();
 
-        using var cmd = conn.CreateCommand();
+        using var cmd = _conn.CreateCommand();
         cmd.CommandText = ReadTable.seasonPrep;
 
-        conn.Open();
+        _conn.Open();
         using var reader = await cmd.ExecuteReaderAsync();
         while (reader.Read())
         {
-            records.Add(new SeasonPrepRecord(
-                Id: reader.GetInt32(0),
-                Season: reader.GetInt32(1),
-                TeamsConfirmed: reader.GetBoolean(2),
-                ScheduleConfirmed: reader.GetBoolean(3)));
+            records.Add(await ReadRecord(reader));
         }
 
-        await conn.CloseAsync();
+        await _conn.CloseAsync();
 
         return await Task.FromResult(records);
     }
 
-    internal static async Task ConfirmSeasonTeams(
-        MySqlConnection conn, int season)
+    internal async Task ConfirmSeasonTeams()
     {
-        var record = await ReadRecord(conn, season);
-        using var cmd = conn.CreateCommand();
+        var record = await ReadRecord();
+        using var cmd = _conn.CreateCommand();
         cmd.CommandText = UpdateRow.seasonPrep;
         ParamBuilder.Build(cmd, ParameterNames.id, record.Id);
-        ParamBuilder.Build(cmd, ParameterNames.season, season);
+        ParamBuilder.Build(cmd, ParameterNames.season, _season);
         ParamBuilder.Build(cmd, ParameterNames.teamsConfirmed, 1);
         ParamBuilder.Build(cmd, ParameterNames.schedulesLoaded, record.ScheduleConfirmed);
 
-        conn.Open();
+        _conn.Open();
         await cmd.ExecuteNonQueryAsync();
-        await conn.CloseAsync();
+        await _conn.CloseAsync();
     }
 
-    internal static async Task ConfirmSeasonSchedule(
-    MySqlConnection conn, int season)
+    internal async Task ConfirmSeasonSchedule()
     {
-        var record = await ReadRecord(conn, season);
-        using var cmd = conn.CreateCommand();
+        var record = await ReadRecord();
+        using var cmd = _conn.CreateCommand();
         cmd.CommandText = UpdateRow.seasonPrep;
         ParamBuilder.Build(cmd, ParameterNames.id, record.Id);
-        ParamBuilder.Build(cmd, ParameterNames.season, season);
+        ParamBuilder.Build(cmd, ParameterNames.season, _season);
         ParamBuilder.Build(cmd, ParameterNames.teamsConfirmed, record.TeamsConfirmed);
         ParamBuilder.Build(cmd, ParameterNames.schedulesLoaded, 1);
 
-        conn.Open();
+        _conn.Open();
         await cmd.ExecuteNonQueryAsync();
-        await conn.CloseAsync();
+        await _conn.CloseAsync();
+    }
+
+    private static async Task<SeasonPrepRecord> ReadRecord(
+        MySqlDataReader reader)
+    {
+        var record = new SeasonPrepRecord(
+            Id: reader.GetInt32(0),
+            Season: reader.GetInt32(1),
+            TeamsConfirmed: reader.GetBoolean(2),
+            ScheduleConfirmed: reader.GetBoolean(3));
+
+        return await Task.FromResult(record);
     }
 }

@@ -1,5 +1,7 @@
 ﻿using FBTracker.Shared.GloblaConstants.EndpointTags;
 using FBTracker.Shared.Models;
+using FBTracker.Shared.QueryObjects;
+using FBTracker.Shared.QueryObjects.Games;
 using System.Net.Http.Json;
 
 namespace FBTracker.Client.DataAccess;
@@ -8,14 +10,16 @@ internal static class GamesAccess
 {
     internal static async Task<IEnumerable<ScheduledGame>> GetSeasonSchedule(
         HttpClient http,
-        int season)
+        GamesQuery query)
     {
-        var url = http.BaseAddress +
-            ScheduledGamesRouteNames.controller_route + "/" +
-            ScheduledGamesRouteNames.get_season;
+        var url = new QueryUrl(
+            http.BaseAddress?? new(""),
+            ScheduledGamesRouteNames.controller_route,
+            ScheduledGamesRouteNames.get_season)
+            .ToString();
 
         var response = await http
-            .PostAsJsonAsync<int>(url, season);
+            .PostAsJsonAsync(url, query);
 
         if (response.IsSuccessStatusCode)
         {
@@ -27,19 +31,18 @@ internal static class GamesAccess
 
     internal static async Task<IEnumerable<ScheduledGame>> GetWeekSchedule(
         HttpClient http,
-        int season,
-        int week)
+        GamesQuery query)
     {
-        var url = http.BaseAddress +
-            ScheduledGamesRouteNames.controller_route + "/" +
-            ScheduledGamesRouteNames.get_week;
-
-        var season_week = new Tuple<int, int>(season, week);
+        var url = new QueryUrl(
+            http.BaseAddress?? new(""),
+            ScheduledGamesRouteNames.controller_route,
+            ScheduledGamesRouteNames.get_week)
+            .ToString();
 
         var response = await http
             .PostAsJsonAsync(
-            url, season_week);
-
+            url, query);
+        
         if (response.IsSuccessStatusCode)
         {
             return await response.Content
@@ -52,18 +55,17 @@ internal static class GamesAccess
 
     internal static async Task<IEnumerable<ScheduledGame>> GetTeamSeason(
         HttpClient http,
-        int season,
-        int teamId)
+        GamesQuery query)
     {
-        var url = http.BaseAddress +
-            ScheduledGamesRouteNames.controller_route + "/" +
-            ScheduledGamesRouteNames.get_team_season;
-
-        var season_team = new Tuple<int, int>(season, teamId);
+        var url = new QueryUrl(
+            http.BaseAddress?? new(""),
+            ScheduledGamesRouteNames.controller_route,
+            ScheduledGamesRouteNames.get_team_season)
+            .ToString();
 
         var response = await http
             .PostAsJsonAsync(
-            url, season_team);
+            url, query);
 
         if (response.IsSuccessStatusCode)
         {
@@ -77,18 +79,16 @@ internal static class GamesAccess
 
     internal static async Task<ScheduledGame> GetTeamWeek(
         HttpClient http,
-        int season,
-        int week,
-        int team)
+        GamesQuery query)
     {
-        var season_week_team = new int[3] { season, week, team };
-        var url = http.BaseAddress +
-            ScheduledGamesRouteNames.controller_route + "/" +
-            ScheduledGamesRouteNames.get_team_week;
-
+        var url = new QueryUrl(
+            http.BaseAddress ?? new(""),
+            ScheduledGamesRouteNames.controller_route,
+            ScheduledGamesRouteNames.get_team_week)
+            .ToString();
 
         var response = await http.
-            PostAsJsonAsync(url, season_week_team);
+            PostAsJsonAsync(url, query);
 
         if (response.IsSuccessStatusCode)
         {
@@ -104,11 +104,15 @@ internal static class GamesAccess
         HttpClient http,
         ScheduledGame game)
     {
-        var url = http.BaseAddress +
-            ScheduledGamesRouteNames.controller_route + "/" +
-            ScheduledGamesRouteNames.save_new_record;
+        var url = new QueryUrl(
+            http.BaseAddress?? new(""),
+            ScheduledGamesRouteNames.controller_route,
+            ScheduledGamesRouteNames.save_new_record)
+            .ToString();
+            
+        var response = await http
+            .PostAsJsonAsync(url, game);
 
-        var response = await http.PostAsJsonAsync(url, game);
         if (response.IsSuccessStatusCode)
         {
             await Task.CompletedTask;

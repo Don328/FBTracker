@@ -26,8 +26,9 @@ internal class SeasonPrepRepo{
         if(_season >= StateConstants.seasonMin &&
             _season <= StateConstants.seasonMax) 
         {
-            var record = await SeasonPrepTable.ReadRecord(
-                _db, _season);
+            var record = await new SeasonPrepTable(_db)
+                .WithSeason(_season)
+                .ReadRecord();
 
             return await Task.FromResult(record);
         }
@@ -37,29 +38,28 @@ internal class SeasonPrepRepo{
 
     internal async Task<IEnumerable<SeasonPrepRecord>> GetAll()
     {
-        var records = await SeasonPrepTable.ReadAll(_db);
+        var records = await new SeasonPrepTable(_db).ReadAll();
         return await Task.FromResult(records);
     }
 
     internal async Task Create()
     {
         var record = new SeasonPrepRecord(0, _season, false, false);
-
-        await SeasonPrepTable
-            .Create(_db, record);
-
+        await new SeasonPrepTable(_db).Create(record);
         await Task.CompletedTask;
     }
 
     internal async Task ConfirmTeams()
     {
-        await SeasonPrepTable
-            .ConfirmSeasonTeams(_db, _season);
+        await new SeasonPrepTable(_db)
+            .WithSeason(_season)
+            .ConfirmSeasonTeams();
     }
 
     internal async Task ConfirmSchedule()
     {
-        await SeasonPrepTable
-            .ConfirmSeasonSchedule(_db, _season);
+        await new SeasonPrepTable(_db)
+            .WithSeason(_season)
+            .ConfirmSeasonSchedule();
     }
 }

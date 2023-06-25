@@ -1,5 +1,7 @@
 ﻿using FBTracker.Shared.GloblaConstants.EndpointTags;
 using FBTracker.Shared.Models;
+using FBTracker.Shared.QueryObjects;
+using FBTracker.Shared.QueryObjects.Teams;
 using System.Net.Http.Json;
 
 namespace FBTracker.Client.DataAccess;
@@ -8,13 +10,16 @@ internal static class TeamsAccess
 {
     internal static async Task<IEnumerable<Team>> GetTeams(
         HttpClient http,
-        int season)
+        TeamsQuery query)
     {
+        var url = new QueryUrl(
+            http.BaseAddress?? new(""),
+            TeamsRouteNames.controller_route,
+            TeamsRouteNames.get)
+                .ToString();
+
         var response = await http.PostAsJsonAsync(
-            http.BaseAddress +
-            TeamsRouteNames.controller_route + "/" +
-            TeamsRouteNames.get,
-            season);
+            url, query);
 
         if (response.IsSuccessStatusCode)
         {
@@ -32,14 +37,16 @@ internal static class TeamsAccess
 
     internal static async Task<IEnumerable<Team>> LoadPreviousSeasonTeams(
         HttpClient http,
-        int fromSeason,
-        int toSeason)
+        SeasonTeamTransfer query)
     {
-        var response = await http.PostAsJsonAsync<(int, int)>(
-            http.BaseAddress +
-            TeamsRouteNames.controller_route + "/" +
-            TeamsRouteNames.load_from_season,
-             (fromSeason, toSeason));
+        var url = new QueryUrl(
+            http.BaseAddress ?? new(""),
+            TeamsRouteNames.controller_route,
+            TeamsRouteNames.load_from_season)
+                .ToString();
+
+        var response = await http.PostAsJsonAsync(
+             url, query);
 
         if (response.IsSuccessStatusCode)
         {
@@ -57,11 +64,14 @@ internal static class TeamsAccess
         HttpClient http,
         Team team)
     {
+        var url = new QueryUrl(
+            http.BaseAddress?? new(""),
+            TeamsRouteNames.controller_route,
+            TeamsRouteNames.update)
+                .ToString();
+
         var response = await http.PostAsJsonAsync(
-            http.BaseAddress +
-            TeamsRouteNames.controller_route + "/" +
-            TeamsRouteNames.update,
-            team);
+            url, team);
 
         if (response.IsSuccessStatusCode)
         { return true; }
@@ -72,11 +82,14 @@ internal static class TeamsAccess
         HttpClient http,
         Team team)
     {
+        var url = new QueryUrl(
+            http.BaseAddress?? new(""),
+            TeamsRouteNames.controller_route,
+            TeamsRouteNames.add)
+                .ToString();
+
         var response = await http.PostAsJsonAsync(
-            http.BaseAddress +
-            TeamsRouteNames.controller_route + "/" +
-            TeamsRouteNames.add,
-            team);
+            url, team);
 
         if (response.IsSuccessStatusCode)
         { return true; }

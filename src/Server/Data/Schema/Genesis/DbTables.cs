@@ -21,7 +21,9 @@ internal static class DbTables
 
     internal static async Task SeedUser_1(MySqlConnection conn)
     {
-        var season = await UserStateTable.GetSelectedSeason(conn, 1);
+        var season = await new UserStateTable(conn)
+            .WithUserId(1)
+            .GetSelectedSeason();
 
         if (season < 1)
         {
@@ -35,10 +37,16 @@ internal static class DbTables
 
     internal static async Task Seed2021Data(MySqlConnection conn)
     {
-        var seasonPrep = await SeasonPrepTable.ReadRecord(conn, 2021);
+        var seasonPrep = await new SeasonPrepTable(conn)
+            .WithSeason(2021)
+            .ReadRecord();
+        
         if (seasonPrep.Season == -1) await SeedSeasonPrep(conn);
         
-        var teams = await TeamsTable.ReadSeason(conn, 2021);
+        var teams = await new TeamsTable(conn)
+            .WithSeason(2021)
+            .ReadSeason();
+
         if (teams.Count() < 32) await SeedTeams(conn);
     }
 

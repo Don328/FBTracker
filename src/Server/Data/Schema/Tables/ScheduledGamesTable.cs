@@ -7,21 +7,27 @@ using MySqlConnector;
 
 namespace FBTracker.Server.Data.Schema.Tables;
 
-internal static class ScheduledGamesTable
+internal class ScheduledGamesTable
 {
-    internal static async Task<int> Create(
-        MySqlConnection conn, ScheduledGame game)
+    private readonly MySqlConnection _conn;
+    private int _season;
+    private int _week;
+    private int _teamId;
+
+    public ScheduledGamesTable(
+        MySqlConnection conn)
+    {
+        _conn = conn;
+    }
+
+    internal async Task<int> Create(ScheduledGame game)
     {
         int id = await TableIdService.GetNextId(
-            conn, GetIdsInUse.scheduledGame);
+            _conn, GetIdsInUse.scheduledGame);
 
-        int dayIdx;
-        if (game.GameDay == null)
-            dayIdx = -1;
-        else
-            dayIdx = (int)game.GameDay;
+        int dayIdx = (int)game.GameDay;
 
-        using var cmd = conn.CreateCommand();
+        using var cmd = _conn.CreateCommand();
         cmd.CommandText = CreateRow.schedueldGame;
         ParamBuilder.Build(cmd, ParameterNames.id, id);
         ParamBuilder.Build(cmd, ParameterNames.season, game.Season);
@@ -31,30 +37,48 @@ internal static class ScheduledGamesTable
         ParamBuilder.Build(cmd, ParameterNames.byeTeamId, game.ByeTeamId);
         ParamBuilder.Build(cmd, ParameterNames.dayOfWeekIdx, dayIdx);
 
-        conn.Open();
+        _conn.Open();
         await cmd.ExecuteNonQueryAsync();
-        await conn.CloseAsync();
+        await _conn.CloseAsync();
         
         return await Task.FromResult(id);
     }
 
-    internal static async Task<IEnumerable<ScheduledGame>> ReadSeason(
-        MySqlConnection conn,
-        int season)
+    internal ScheduledGamesTable WithSeason(int season)
+    {
+        _season = season;
+        return this;
+    }
+
+    internal ScheduledGamesTable WithWeek(int week)
+    {
+        _week = week;
+        return this;
+    }
+
+    internal ScheduledGamesTable WithTeamId(int teamId)
+    {
+        _teamId = teamId;
+        return this;
+    }
+
+    internal async Task<IEnumerable<ScheduledGame>> ReadSeason()
     {
         List<ScheduledGameRecord> records = default!;
 
-        using var cmd = conn.CreateCommand();
+        using var cmd = _conn.CreateCommand();
         cmd.CommandText = ReadTable.scheduledGames_bySeason;
-        ParamBuilder.Build(cmd, ParameterNames.season, season);
+        ParamBuilder.Build(cmd, ParameterNames.season, _season);
 
-        conn.Open();
+        _conn.Open();
         using var reader = await cmd.ExecuteReaderAsync();
         while (reader.Read())
         {
             records.Add(await ReadRecord(reader));
         }
 
+        await _conn.CloseAsync();
+        
         if (records is not null)
         {
             var entities = ScheduledGamesMapper.ToEntity(records);
@@ -64,25 +88,24 @@ internal static class ScheduledGamesTable
         return Enumerable.Empty<ScheduledGame>();
     }
 
-    internal static async Task<IEnumerable<ScheduledGame>> ReadWeek(
-        MySqlConnection conn,
-        int season,
-        int week)
+    internal async Task<IEnumerable<ScheduledGame>> ReadWeek()
     {
         List<ScheduledGameRecord> records = default!;
 
-        using var cmd = conn.CreateCommand();
+        using var cmd = _conn.CreateCommand();
         cmd.CommandText = ReadTable.scheduledGames_byWeek;
-        ParamBuilder.Build(cmd, ParameterNames.season, season);
-        ParamBuilder.Build(cmd, ParameterNames.week, week);
+        ParamBuilder.Build(cmd, ParameterNames.season, _season);
+        ParamBuilder.Build(cmd, ParameterNames.week, _week);
 
-        conn.Open();
+        _conn.Open();
         using var reader = await cmd.ExecuteReaderAsync();
         while (reader.Read())
         {
             records.Add(await ReadRecord(reader));
         }
 
+        await _conn.CloseAsync();
+        
         if (records is not null)
         {
             var entities = ScheduledGamesMapper.ToEntity(records);
@@ -92,29 +115,26 @@ internal static class ScheduledGamesTable
         return Enumerable.Empty<ScheduledGame>();
     }
 
-    internal static async Task<IEnumerable<ScheduledGame>> ReadTeamSeason(
-        MySqlConnection conn,
-        int teamId,
-        int season)
+    internal async Task<IEnumerable<ScheduledGame>> ReadTeamSeason()
     {
         List<ScheduledGameRecord> records = new();
         
-        using var cmd = conn.CreateCommand();
+        using var cmd = _conn.CreateCommand();
         cmd.CommandText = ReadTable.scheduledGames_byTeam;
         
-        ParamBuilder.Build(cmd, ParameterNames.season, season);
-        ParamBuilder.Build(cmd, ParameterNames.homeTeamId, teamId);
-        ParamBuilder.Build(cmd, ParameterNames.awayTeamId, teamId);
-        ParamBuilder.Build(cmd, ParameterNames.byeTeamId, teamId);
+        ParamBuilder.Build(cmd, ParameterNames.season, _season);
+        ParamBuilder.Build(cmd, ParameterNames.homeTeamId, _teamId);
+        ParamBuilder.Build(cmd, ParameterNames.awayTeamId, _teamId);
+        ParamBuilder.Build(cmd, ParameterNames.byeTeamId, _teamId);
 
-        conn.Open();
+        _conn.Open();
         using var reader = await cmd.ExecuteReaderAsync();
         while(reader.Read())
         {
             records.Add(await ReadRecord(reader));
         }
         
-        await conn.CloseAsync();
+        await _conn.CloseAsync();
 
         if (records is not null)
         {
@@ -125,24 +145,20 @@ internal static class ScheduledGamesTable
         return Enumerable.Empty<ScheduledGame>();
     }
 
-    internal static async Task<ScheduledGame> ReadTeamWeek(
-        MySqlConnection conn,
-        int teamId,
-        int season,
-        int week)
+    internal async Task<ScheduledGame> ReadTeamWeek()
     {
         ScheduledGameRecord record = default!;
         
-        using var cmd = conn.CreateCommand();
+        using var cmd = _conn.CreateCommand();
         cmd.CommandText = ReadRow.scheduledGames_week_byTeam;
-        ParamBuilder.Build(cmd, ParameterNames.season, season);
-        ParamBuilder.Build(cmd, ParameterNames.week, week);
-        ParamBuilder.Build(cmd, PropertyNames.awayTeamId, teamId);
-        ParamBuilder.Build(cmd, PropertyNames.homeTeamId, teamId);
-        ParamBuilder.Build(cmd, PropertyNames.byeTeamId, teamId);
+        ParamBuilder.Build(cmd, ParameterNames.season, _season);
+        ParamBuilder.Build(cmd, ParameterNames.week, _week);
+        ParamBuilder.Build(cmd, PropertyNames.awayTeamId, _teamId);
+        ParamBuilder.Build(cmd, PropertyNames.homeTeamId, _teamId);
+        ParamBuilder.Build(cmd, PropertyNames.byeTeamId, _teamId);
 
         
-        conn.Open();
+        _conn.Open();
         using var reader = await cmd.ExecuteReaderAsync();
         
         while (reader.Read())
@@ -150,7 +166,7 @@ internal static class ScheduledGamesTable
             record = await ReadRecord(reader);
         }
 
-        await conn.CloseAsync();
+        await _conn.CloseAsync();
         
         if (record is not null)
         {

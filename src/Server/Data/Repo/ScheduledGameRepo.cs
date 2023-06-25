@@ -38,31 +38,40 @@ internal class ScheduledGameRepo
 
     internal async Task Create(ScheduledGame scheduledGame)
     {
-        await ScheduledGamesTable.Create(_db, scheduledGame);
+        await new ScheduledGamesTable(_db)
+            .Create(scheduledGame);
         await Task.CompletedTask;
     }
 
     internal async Task<IEnumerable<ScheduledGame>> GetTeamSeason()
     {
-        return await ScheduledGamesTable.ReadTeamSeason(
-            conn: _db, teamId: _teamId, season: _season);
+        return await new ScheduledGamesTable(_db)
+            .WithSeason(_season)
+            .WithTeamId(_teamId)
+            .ReadTeamSeason();
     }
 
     internal async Task<ScheduledGame> GetTeamWeek()
     {
-        return await ScheduledGamesTable.ReadTeamWeek(
-            conn: _db, teamId: _teamId, season: _season, week: _week);
+        return await new ScheduledGamesTable(_db)
+            .WithTeamId (_teamId)
+            .WithSeason (_season)
+            .WithWeek(_week)
+            .ReadTeamWeek();
     }
 
     internal async Task<IEnumerable<ScheduledGame>> GetSeason()
     {
-        return await ScheduledGamesTable.ReadSeason(
-            conn: _db, season: _season);
+        return await new ScheduledGamesTable(_db)
+            .WithSeason(_season)
+            .ReadSeason();
     }
 
     internal async Task<IEnumerable<ScheduledGame>> GetWeek()
     {
-        return await ScheduledGamesTable.ReadWeek(
-            conn: _db, season: _season, week: _week);
+        return await new ScheduledGamesTable(_db)
+            .WithSeason(_season)
+            .WithWeek(_week)
+            .ReadWeek();
     }
 }

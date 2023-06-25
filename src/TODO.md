@@ -59,10 +59,10 @@ Currently, their methods are exposed to the entire back end code base. as `inter
 
 Project should be arranged by areas so that components that work together are found together.
 
-- [ ] Create an "Areas" directory
-- [ ] Create directories for "Home" and "Teams"
-- [ ] Move all apropriate files into "Areas/Home" and "Areas/Teams"
-- [ ] Remove the depricated file structure
+- [x] Create an "Areas" directory
+- [x] Create directories for "Home" and "Teams"
+- [x] Move all apropriate files into "Areas/Home" and "Areas/Teams"
+- [x] Remove the depricated file structure
   
  ---
 
@@ -70,9 +70,9 @@ Project should be arranged by areas so that components that work together are fo
 
 The application should implement a logging client. This needs to be initiated before the code base grows much further
 
-- [ ] Add a logging service to the Client project
-- [ ] Add a logging service to the Server project
-- [ ] Add calls to the logger throughout the projects
+- [x] Add a logging service to the Client project
+- [x] Add a logging service to the Server project
+- [x] Add calls to the logger throughout the projects
 
 ---
 
@@ -80,9 +80,9 @@ The application should implement a logging client. This needs to be initiated be
 
 API calls using multiple parameters, particulary multiple parameters of the same `Type` should be packaged into some sort of query object
 
-- [ ] Create query objects in Shared project
-- [ ] Modify Controllers (Server) to require query objects instead of Tuple, int[], etc. for multiple parameters
-- [ ] Modify DataAccess classes (Client) to use query objects
+- [x] Create query objects in Shared project
+- [x] Modify Controllers (Server) to require query objects instead of Tuple, int[], etc. for multiple parameters
+- [x] Modify DataAccess classes (Client) to use query objects
 
 ---
 
@@ -103,5 +103,24 @@ All data entry forms need to have validation checks and helpful error messages
 
 - [ ] Season Select form needs validation
 - [ ] Season Select form needs error message system
+
+---
+
+## Change Http handling
+
+Passing the `HttpClient` object around the client project is an anti-pattern
+
+- [ ] Rewatch [Nick's Post](https://www.youtube.com/watch?v=Z6Y2adsMnAA)
+- [ ] Create an HttpClientFactory class
+- [ ] Refactor all front end code to get `HttpClient` form `HttpClientFactrory`
+
+---
+
+## Add Scoped css
+
+The current `.css` file is getting too big. Style settings should be put into separate scoped files for each element
+
+- [ ] Uncomment line in `.../wwwroot/index.html` to allow for scoped `css`
+- [ ] Move all style settings into new `.css` files created for each page/component
 
 ---

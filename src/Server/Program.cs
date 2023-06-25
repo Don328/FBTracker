@@ -1,16 +1,13 @@
+using FBTracker.Server;
 using FBTracker.Server.Data;
 using FBTracker.Server.Data.Services;
 using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllersWithViews();
-builder.Services.AddRazorPages();
-
-builder.Services.AddSingleton<DataContext>();
-builder.Services.AddTransient<StateService>();
-builder.Services.AddTransient<ScheduledGamesService>();
-builder.Services.AddTransient<TeamsService>();
+Startup.AddLogging(builder);
+Startup.AddControllersAndViews(builder.Services);
+Startup.AddDomainServices(builder.Services);
 
 var app = builder.Build();
 
@@ -18,6 +15,9 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
+
+    // Log to the Output Window when in dev env
+    builder.Logging.AddDebug();
 }
 else
 {
@@ -36,3 +36,5 @@ app.MapControllers();
 app.MapFallbackToFile("index.html");
 
 app.Run();
+
+

@@ -8,15 +8,23 @@ using System.IO;
 
 namespace FBTracker.Server.Data.Schema.Tables;
 
-internal static class TeamsTable
+internal class TeamsTable
 {
-    internal static async Task<int> Create(
-        MySqlConnection conn, Team team)
+    private readonly MySqlConnection _conn;
+    private int _teamId;
+    private int _season;
+
+    public TeamsTable(MySqlConnection conn)
+    {
+        _conn = conn;
+    }
+
+    internal async Task<int> Create(Team team)
     {
         int id = await TableIdService.GetNextId(
-            conn, GetIdsInUse.teams);
+            _conn, GetIdsInUse.teams);
 
-        using var cmd = conn.CreateCommand();
+        using var cmd = _conn.CreateCommand();
         cmd.CommandText = CreateRow.team;
         ParamBuilder.Build(cmd, ParameterNames.id, id);
         ParamBuilder.Build(cmd, ParameterNames.season, team.Season);
@@ -26,73 +34,67 @@ internal static class TeamsTable
         ParamBuilder.Build(cmd, ParameterNames.conference, (int)team.Conference);
         ParamBuilder.Build(cmd, ParameterNames.region, (int)team.Region);
 
-        conn.Open();
+        _conn.Open();
         await cmd.ExecuteNonQueryAsync();
-        await conn.CloseAsync();
+        await _conn.CloseAsync();
 
         return await Task.FromResult(id);
     }
 
-    internal static async Task<Team> ReadFromId(
-        MySqlConnection conn,
-        int id)
+    internal TeamsTable WithId(int id)
+    {
+        _teamId = id;
+        return this;
+    }
+
+    internal TeamsTable WithSeason(int season)
+    {
+        _season = season;
+        return this;
+    }
+
+    internal async Task<Team> ReadFromId()
     {
         TeamRecord record = default!;
-        using var cmd = conn.CreateCommand();
+        using var cmd = _conn.CreateCommand();
 
         cmd.CommandText = ReadRow.team_by_id;
-        ParamBuilder.Build(cmd, ParameterNames.id, id);
-        conn.Open();
+        ParamBuilder.Build(cmd, ParameterNames.id, _teamId);
+        _conn.Open();
         using var reader = await cmd.ExecuteReaderAsync();
         while (reader.Read())
         {
-            record = new(
-                Id: reader.GetInt32(0),
-                Season: reader.GetInt32(1),
-                Locale: reader.GetString(2),
-                Name: reader.GetString(3),
-                Abrev: reader.GetString(4),
-                ConferenceIndex: reader.GetInt32(5),
-                RegionIndex: reader.GetInt32(6));
+            record = await ReadRecord(reader);
         }
 
         var team = TeamsMapper.ToEntity(record);
-        await conn.CloseAsync();
+        await _conn.CloseAsync();
         return await Task.FromResult(team);
     }
 
-    internal static async Task<IEnumerable<TeamRecord>> ReadSeason(
-        MySqlConnection conn, int season)
+    internal async Task<IEnumerable<TeamRecord>> ReadSeason()
     {
         var teams = new List<TeamRecord>();
 
-        using var cmd = conn.CreateCommand();
+        using var cmd = _conn.CreateCommand();
         cmd.CommandText = ReadTable.teamsBySeason;
-        ParamBuilder.Build(cmd, ParameterNames.season, season);
+        ParamBuilder.Build(cmd, ParameterNames.season, _season);
 
-        conn.Open();
+        _conn.Open();
         using var reader = await cmd.ExecuteReaderAsync();
         while (reader.Read())
         {
-            teams.Add(new TeamRecord(
-                Id: reader.GetInt32(0),
-                Season: reader.GetInt32(1),
-                Locale: reader.GetString(2),
-                Name: reader.GetString(3),
-                Abrev: reader.GetString(4),
-                ConferenceIndex: reader.GetInt32(5),
-                RegionIndex: reader.GetInt32(6)));
+            teams.Add(await ReadRecord(reader));
         }
 
-        await conn.CloseAsync();
+        await _conn.CloseAsync();
         return await Task.FromResult(teams);
     }
 
-    internal static async Task UpdateTeam(
-        MySqlConnection conn,
+    internal async Task UpdateTeam(
         Team team)
     {
-        using var cmd = conn.CreateCommand();
+        using var cmd = _conn.CreateCommand();
         cmd.CommandText = UpdateRow.team;
         ParamBuilder.Build(cmd, ParameterNames.id, team.Id);
         ParamBuilder.Build(cmd, ParameterNames.locale, team.Locale);
@@ -101,23 +103,36 @@ internal static class TeamsTable
         ParamBuilder.Build(cmd, ParameterNames.conference, (int)team.Conference);
         ParamBuilder.Build(cmd, ParameterNames.region, (int)team.Region);
 
-        conn.Open();
+        _conn.Open();
         await cmd.ExecuteNonQueryAsync();
-        await conn.CloseAsync();
+        await _conn.CloseAsync();
 
         await Task.CompletedTask;
     }
 
-    internal static async Task Delete(
-        MySqlConnection conn,
-        int id)
+    internal async Task Delete()
     {
-        using var cmd = conn.CreateCommand();
+        using var cmd = _conn.CreateCommand();
         cmd.CommandText = DeleteRow.team;
-        ParamBuilder.Build(cmd, ParameterNames.id, id);
+        ParamBuilder.Build(cmd, ParameterNames.id, _teamId);
 
-        conn.Open();
+        _conn.Open();
         await cmd.ExecuteNonQueryAsync();
-        await conn.CloseAsync();
+        await _conn.CloseAsync();
+    }
+
+    private static async Task<TeamRecord> ReadRecord(
+        MySqlDataReader reader)
+    {
+        var record = new TeamRecord(
+            Id: reader.GetInt32(0),
+            Season: reader.GetInt32(1),
+            Locale: reader.GetString(2),
+            Name: reader.GetString(3),
+            Abrev: reader.GetString(4),
+            ConferenceIndex: reader.GetInt32(5),
+            RegionIndex: reader.GetInt32(6));
+
+        return await Task.FromResult(record);
     }
 }

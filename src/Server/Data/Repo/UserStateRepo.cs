@@ -30,13 +30,15 @@ internal class UserStateRepo
 
     internal async Task<int> GetSeason()
     {
-        var season = await UserStateTable
-            .GetSelectedSeason(_db, _id);
+        var season = await new UserStateTable(_db)
+            .WithUserId(_id)
+            .GetSelectedSeason();
 
         return await Task.FromResult(season);
     }
+
     internal async Task UpdateRecord()
     {
-        await UserStateTable.Update(_db, _record);
+        await new UserStateTable(_db).Update(_record);
     }
 }

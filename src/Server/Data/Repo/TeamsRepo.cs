@@ -36,7 +36,9 @@ internal class TeamsRepo
 
     internal async Task<Team> GetTeam()
     {
-        return await TeamsTable.ReadFromId(_db, _teamId);
+        return await new TeamsTable(_db)
+            .WithId(_teamId)
+            .ReadFromId();
     }
 
     internal async Task<
@@ -45,8 +47,9 @@ internal class TeamsRepo
         if (_season >= StateConstants.seasonMin &&
             _season <= StateConstants.seasonMax)
         {
-            var teamRecords = await TeamsTable
-                .ReadSeason(_db, _season);
+            var teamRecords = await new TeamsTable(_db)
+                .WithSeason(_season)
+                .ReadSeason();
             
             return TeamsMapper
                 .ToEntity(teamRecords);
@@ -64,7 +67,7 @@ internal class TeamsRepo
         foreach (var team in teams)
         {
             team.Season = newSeason;
-            await TeamsTable.Create(_db, team);
+            await Create(team);
         }
 
         await Task.CompletedTask;
@@ -72,11 +75,11 @@ internal class TeamsRepo
 
     internal async Task Update(Team team)
     {
-        await TeamsTable.UpdateTeam(_db, team);
+        await new TeamsTable(_db).UpdateTeam(team);
     }
 
     internal async Task Create(Team team)
     {
-        await TeamsTable.Create(_db, team);
+        await new TeamsTable(_db).Create(team);
     }
 }

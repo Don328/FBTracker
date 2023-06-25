@@ -1,6 +1,8 @@
 ﻿using FBTracker.Shared.GloblaConstants;
 using FBTracker.Shared.GloblaConstants.EndpointTags;
 using FBTracker.Shared.Models;
+using FBTracker.Shared.QueryObjects;
+using FBTracker.Shared.QueryObjects.State;
 using System.Data;
 using System.Net.Http.Json;
 using static System.Net.WebRequestMethods;
@@ -12,11 +14,17 @@ internal static class StateAccess
     internal static async Task<int> GetSelectedSeason(
         HttpClient http)
     {
+        var url = new QueryUrl(
+            http.BaseAddress ?? new(""),
+            StateRouteNames.controller_route,
+            StateRouteNames.selected_season)
+                .ToString();
+
+        var query = new UserStateQuery()
+        { Id = StateConstants.defaultUserId };
+
         var response = await http.PostAsJsonAsync(
-            http.BaseAddress +
-            StateRouteNames.controller_route + "/" +
-            StateRouteNames.selected_season,
-            StateConstants.defaultUserId);
+            url, query);
 
         if (response.IsSuccessStatusCode)
         {
@@ -29,30 +37,34 @@ internal static class StateAccess
 
     internal static async Task<bool> SetSelectedSeason(
         HttpClient http,
-        int season)
+        UserStateQuery query)
     {
+        var url = new QueryUrl(
+            http.BaseAddress ?? new(""),
+            StateRouteNames.controller_route,
+            StateRouteNames.select_season)
+                .ToString();
+
         var response = await http.PostAsJsonAsync(
-            http.BaseAddress +
-            StateRouteNames.controller_route + "/" +
-            StateRouteNames.select_season,
-            new Tuple<int, int>(
-                StateConstants.defaultUserId,
-                season));
+            url, query);
 
         return await Task.FromResult(response.IsSuccessStatusCode);
     }
 
     internal static async Task<bool> CheckTeamsConfirmed(
         HttpClient http,
-        int season)
+        UserStateQuery query)
     {
-        var response = await http.PostAsJsonAsync(
-            http.BaseAddress +
-            StateRouteNames.controller_route + "/" +
-            StateRouteNames.teams_confirmed,
-            season);
+        var url = new QueryUrl(
+            http.BaseAddress ?? new(""),
+            StateRouteNames.controller_route,
+            StateRouteNames.teams_confirmed)
+                .ToString();
 
-        if (response.IsSuccessStatusCode) 
+        var response = await http.PostAsJsonAsync(
+            url, query);
+
+        if (response.IsSuccessStatusCode)
         {
             return await response.Content
                 .ReadFromJsonAsync<bool>();
@@ -63,13 +75,16 @@ internal static class StateAccess
 
     internal static async Task<bool> CheckScheduleConfirmed(
         HttpClient http,
-        int season)
+        UserStateQuery query)
     {
+        var url = new QueryUrl(
+            http.BaseAddress ?? new(""),
+            StateRouteNames.controller_route,
+            StateRouteNames.schedule_confirmed)
+                .ToString();
+
         var response = await http.PostAsJsonAsync(
-            http.BaseAddress +
-            StateRouteNames.controller_route + "/" +
-            StateRouteNames.schedule_confirmed,
-            season);
+            url, query);
 
         if (response.IsSuccessStatusCode)
         {
@@ -82,15 +97,19 @@ internal static class StateAccess
 
     internal static async Task<bool> ConfirmTeamsList(
         HttpClient http,
-        int season)
+        UserStateQuery query)
     {
-        var response = await http.PostAsJsonAsync(
-            http.BaseAddress +
-            StateRouteNames.controller_route + "/" +
-            StateRouteNames.confirm_teams_list,
-            season);
+        var url = new QueryUrl(
+            http.BaseAddress ?? new(""),
+            StateRouteNames.controller_route,
+            StateRouteNames.confirm_teams_list)
+                .ToString();
 
-        if (response.IsSuccessStatusCode) 
-        { return true; } return false;
+        var response = await http.PostAsJsonAsync(
+            url, query);
+
+        if (response.IsSuccessStatusCode)
+        { return true; }
+        return false;
     }
 }
