@@ -32,7 +32,9 @@
                 <TeamDetailsView Team=_selectedTeam
                                  Schedule=_selectedTeamSchedule
                                  Teams=_teams
-                                 OnSubmitGameSchedule=SubmitNewScheduledGame />
+                                 OnSubmitGameSchedule=SubmitNewScheduledGame 
+                                 OnValidateSchedule=ValidateTeamSchedule
+                                 ScheduleIsValid=_selectedTeamScheduleIsValid />
             }
         </div>
     }

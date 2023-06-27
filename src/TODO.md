@@ -43,14 +43,14 @@ It seems appropriate to use this type of pattern in the Table classes.
 
 Currently, their methods are exposed to the entire back end code base. as `internal static`
 
-- [ ] **Create a constructor declaring required objects**
+- [x] **Create a constructor declaring required objects**
 - the db connection, etc.
 - the class should no longer be `static`
 
-- [ ] **Make private fields to contain member data**
+- [x] **Make private fields to contain member data**
 - use methods returning `this` to populate data
 
-- [ ] **Make `Get` methods that return the required types**
+- [x] **Make `Get` methods that return the required types**
 - methods executing queries return the propper type
 
 ---
@@ -122,5 +122,20 @@ The current `.css` file is getting too big. Style settings should be put into se
 
 - [ ] Uncomment line in `.../wwwroot/index.html` to allow for scoped `css`
 - [ ] Move all style settings into new `.css` files created for each page/component
+
+---
+
+## Validate team schedule when all weeks are complete
+
+When `_unscheduledGames == 0`, the team's schedule should be validated
+
+- [x] Check 1 home and 1 away game for each division opponent
+- [x] Check >= 8 Home games
+- [x] Check >= 8 Away games
+- [x] Check == 1 Bye Game
+- [ ] Check <= 6 games vs opposite conf
+- [ ] check >= 4 games vs opposite conf
+- [ ] check <= 13 games vs own conference
+- [ ] check >= 11 games vs own conference
 
 ---

@@ -19,11 +19,27 @@ public partial class TeamDetailsView : ComponentBase
         = Enumerable.Empty<Team>();
 
     [Parameter]
+    public bool ScheduleIsValidated { get; set; }
+
+    [Parameter]
     public EventCallback<ScheduledGame> OnSubmitGameSchedule { get; set; }
+
+    [Parameter]
+    public EventCallback OnValidateSchedule { get; set; }
+
+    [Parameter]
+    public bool ScheduleIsValid { get; set; }
 
     private bool _showAddGameForm = false;
     private int?[] _unscheduledGames = new int?[18];
+    private bool _scheduleFull = false;
     private bool _byeWeekExists = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _scheduleFull = ScheduleFull();
+        //if (_scheduleFull) await ValidateSchedule();
+    }
 
     private async Task ToggleShowAddGameForm()
     {
@@ -51,10 +67,14 @@ public partial class TeamDetailsView : ComponentBase
             {
                 _unscheduledGames[game.Week - 1] = null;
             }
+
+            //if (ScheduleFull())
+            //{
+            //    _scheduleFull = true;
+            //    await ValidateSchedule();
+            //}
         }
-
-
-
+        
         await Task.CompletedTask;
     }
 
@@ -75,5 +95,21 @@ public partial class TeamDetailsView : ComponentBase
                 _byeWeekExists = true;
             }
         }
+    }
+
+    private bool ScheduleFull()
+    {
+        var full = true;
+        foreach (var game in _unscheduledGames)
+        {
+            if (game is not null) full = false;
+        }
+
+        return full;
+    }
+
+    private async Task ValidateSchedule()
+    {
+        await OnValidateSchedule.InvokeAsync();
     }
 }

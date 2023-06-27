@@ -12,5 +12,5 @@ public static class TeamsRouteNames
     public const string add = "add";
     public const string load_from_season = "load-from-season";
     public const string update = "update";
-
+    public const string division_rivals = "division-rivals";
 }

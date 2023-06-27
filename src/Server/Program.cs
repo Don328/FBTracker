@@ -15,9 +15,6 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
-
-    // Log to the Output Window when in dev env
-    builder.Logging.AddDebug();
 }
 else
 {

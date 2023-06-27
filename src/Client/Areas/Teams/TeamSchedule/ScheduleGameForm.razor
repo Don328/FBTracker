@@ -37,11 +37,10 @@
                 </InputSelect>
                 <label class="gameday-select-label">Game Day</label>
                 <InputSelect class="schedule-select-box" @bind-Value=_editModel.GameDay>
-                    <option value=@GameDay.ThursdayNight>Thursday Night</option>
-                    <option value=@GameDay.Saturday>Saturday</option>
-                    <option value=@GameDay.Sunday>Sunday</option>
-                    <option value=@GameDay.SundayNight>Sunday Night</option>
-                    <option value=@GameDay.MondayNight>Monday Night</option>
+                    <option value=@GameDay.Thursday>TNF</option>
+                    <option value=@GameDay.Saturday>Sat</option>
+                    <option value=@GameDay.Sunday>Sun</option>
+                    <option value=@GameDay.Monday>MNF</option>
                 </InputSelect>
                 break;
             case GameType.Away:
@@ -54,11 +53,10 @@
                 </InputSelect>
                 <label class="gameday-select-label">Game Day</label>
                 <InputSelect class="schedule-select-box" @bind-Value=_editModel.GameDay>
-                    <option value=@GameDay.ThursdayNight>Thursday Night</option>
-                    <option value=@GameDay.Saturday>Saturday</option>
-                    <option value=@GameDay.Sunday>Sunday</option>
-                    <option value=@GameDay.SundayNight>Sunday Night</option>
-                    <option value=@GameDay.MondayNight>Monday Night</option>
+                    <option value=@GameDay.Thursday>TNF</option>
+                    <option value=@GameDay.Saturday>Sat</option>
+                    <option value=@GameDay.Sunday>Sun</option>
+                    <option value=@GameDay.Monday>MNF</option>
                 </InputSelect>
                 break;
         }

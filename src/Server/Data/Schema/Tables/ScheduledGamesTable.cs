@@ -104,7 +104,7 @@ internal class ScheduledGamesTable
             records.Add(await ReadRecord(reader));
         }
 
-        await _conn.CloseAsync();
+        _conn.Close();
         
         if (records is not null)
         {
@@ -138,7 +138,10 @@ internal class ScheduledGamesTable
 
         if (records is not null)
         {
-            var entities = ScheduledGamesMapper.ToEntity(records);
+            var entities = ScheduledGamesMapper
+                .ToEntity(records)
+                .OrderBy(e => e.Week);
+
             return await Task.FromResult(entities);
         }
 

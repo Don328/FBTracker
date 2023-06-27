@@ -45,9 +45,11 @@ public class GamesController : ControllerBase
     public async Task<IEnumerable<ScheduledGame>> GetTeamSeason([FromBody]GamesQuery query)
     {
         _logger.LogInformation($"Incomming request for games. Season: {query.Season}, Team:{query.TeamId}");
-        return await _scheduledGamesService.GetTeamSeason(
+        var games = await _scheduledGamesService.GetTeamSeason(
             query.Season,
             query.TeamId);
+
+        return await Task.FromResult(games);
     }
 
     [HttpPost]

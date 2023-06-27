@@ -7,7 +7,19 @@
         <span>@Team.Division</span>
     </div>
     <div class="card-footer">
-        @if (Schedule.Count() < 18)
+        @if (Schedule.Count() == 18)
+        {
+            <div class="row">
+                <span>All games are scheduled</span>
+            </div>
+            <div class="row">
+                @if (ScheduleIsValid)
+                {
+                    <span>Schedule Validated</span>
+                }
+            </div>
+        }
+        else
         {
             <div class="col">
                 <div class="row">
@@ -21,8 +33,8 @@
                         <ScheduleGameForm UnscheduledWeeks=_unscheduledGames
                                           Teams=Teams.ToList()
                                           SelectedTeam=Team
-                                          ByeWeekScheduled=_byeWeekExists 
-                                          OnSubmit=ScheduleNewGame/>
+                                          ByeWeekScheduled=_byeWeekExists
+                                          OnSubmit=ScheduleNewGame />
 
                         <button type="button" class="btn-cancel" @onclick=ToggleShowAddGameForm>Cancel</button>
                     }
@@ -33,6 +45,7 @@
                 </div>
             </div>
         }
+
         @if (Schedule.Any())
         {
             foreach (var game in Schedule)

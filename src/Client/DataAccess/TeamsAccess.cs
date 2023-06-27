@@ -2,6 +2,7 @@
 using FBTracker.Shared.Models;
 using FBTracker.Shared.QueryObjects;
 using FBTracker.Shared.QueryObjects.Teams;
+using System.IO.Pipelines;
 using System.Net.Http.Json;
 
 namespace FBTracker.Client.DataAccess;
@@ -94,5 +95,28 @@ internal static class TeamsAccess
         if (response.IsSuccessStatusCode)
         { return true; }
         return false;
+    }
+
+    internal static async Task<int[]> GetDivisionRivals(
+        HttpClient http,
+        DivisionRivalsQuery query)
+    {
+        var url = new QueryUrl(
+            http.BaseAddress?? new(""),
+            TeamsRouteNames.controller_route,
+            TeamsRouteNames.division_rivals)
+                .ToString();
+
+        var response = await http.PostAsJsonAsync(
+            url, query);
+
+        if (response.IsSuccessStatusCode)
+        {
+            return await response.Content
+                .ReadFromJsonAsync<int[]>()
+                ?? new int[3] { -1, -1, -1 };
+        }
+
+        return new int[] { -1, -1, -1 };
     }
 }

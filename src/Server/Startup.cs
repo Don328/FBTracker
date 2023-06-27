@@ -11,6 +11,11 @@ internal static class Startup
         builder.Logging.ClearProviders();
         builder.Logging.AddConsole();
         builder.Logging.AddEventSourceLogger();
+        
+        if (builder.Environment.IsDevelopment())
+        {
+            builder.Logging.AddDebug();
+        }
     }
 
     internal static void AddControllersAndViews(

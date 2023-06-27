@@ -8,9 +8,8 @@ namespace FBTracker.Shared.Enums;
 public enum GameDay
 {
     Bye,
-    ThursdayNight,
+    Thursday,
     Saturday,
     Sunday,
-    SundayNight,
-    MondayNight
+    Monday
 }
